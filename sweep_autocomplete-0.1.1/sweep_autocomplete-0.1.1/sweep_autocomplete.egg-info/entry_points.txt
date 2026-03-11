@@ -1,0 +1,2 @@
+[console_scripts]
+sweep-autocomplete = sweep_autocomplete.cli:main

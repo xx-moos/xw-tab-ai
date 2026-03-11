@@ -1,0 +1,158 @@
+{
+	"name": "sweep-nes",
+	"displayName": "Sweep Next Edit",
+	"description": "Next Edit Autocomplete using Sweep Model",
+	"version": "0.5.0",
+	"publisher": "SweepAI",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sweepai/vscode-nes"
+	},
+	"icon": "assets/sweep-square.png",
+	"private": true,
+	"engines": {
+		"vscode": "^1.108.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onStartupFinished"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"icons": {
+			"sweep-icon": {
+				"description": "Sweep Icon",
+				"default": {
+					"fontPath": "assets/sweep-icons.woff2",
+					"fontCharacter": "\\ea01"
+				}
+			}
+		},
+		"commands": [
+			{
+				"command": "sweep.triggerNextEdit",
+				"title": "Sweep: Trigger Next Edit Suggestion"
+			},
+			{
+				"command": "sweep.toggleEnabled",
+				"title": "Sweep: Toggle Enabled"
+			},
+			{
+				"command": "sweep.showMenu",
+				"title": "Sweep: Show Menu"
+			},
+			{
+				"command": "sweep.acceptJumpEdit",
+				"title": "Sweep: Accept Jump Edit"
+			},
+			{
+				"command": "sweep.acceptInlineEdit",
+				"title": "Sweep: Accept Inline Edit"
+			},
+			{
+				"command": "sweep.dismissJumpEdit",
+				"title": "Sweep: Dismiss Jump Edit"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "sweep.acceptJumpEdit",
+				"key": "tab",
+				"when": "editorTextFocus && sweep.hasJumpEdit && !editorHasSelection && !inlineSuggestionVisible && !suggestWidgetVisible"
+			},
+			{
+				"command": "sweep.acceptJumpEdit",
+				"key": "alt+tab",
+				"when": "editorTextFocus && sweep.hasJumpEdit && !editorHasSelection"
+			},
+			{
+				"command": "sweep.acceptJumpEdit",
+				"key": "alt+l",
+				"when": "isLinux && editorTextFocus && sweep.hasJumpEdit && !editorHasSelection"
+			},
+			{
+				"command": "sweep.dismissJumpEdit",
+				"key": "escape",
+				"when": "editorTextFocus && sweep.hasJumpEdit"
+			},
+			{
+				"command": "editor.action.inlineSuggest.commit",
+				"key": "alt+tab",
+				"when": "editorTextFocus && inlineSuggestionVisible && suggestWidgetVisible && !editorHasSelection && !sweep.hasJumpEdit && !inSnippetMode"
+			},
+			{
+				"command": "editor.action.inlineSuggest.commit",
+				"key": "alt+l",
+				"when": "isLinux && editorTextFocus && inlineSuggestionVisible && suggestWidgetVisible && !editorHasSelection && !sweep.hasJumpEdit && !inSnippetMode"
+			},
+			{
+				"command": "editor.action.inlineSuggest.hide",
+				"key": "escape",
+				"when": "editorTextFocus && inlineSuggestionVisible && !suggestWidgetVisible && !sweep.hasJumpEdit"
+			}
+		],
+		"configuration": {
+			"title": "Sweep Next Edit",
+			"properties": {
+				"sweep.enabled": {
+					"type": "boolean",
+					"default": true,
+					"scope": "window",
+					"description": "Enable or disable Sweep Next Edit suggestions"
+				},
+				"sweep.maxContextFiles": {
+					"type": "number",
+					"default": 5,
+					"description": "Maximum number of recently viewed files to include as context"
+				},
+				"sweep.autocompleteExclusionPatterns": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"default": [
+						"**/.env*",
+						"**/*.pem",
+						"**/*.key",
+						"**/*.cert",
+						"**/*.crt",
+						"**/.dev.vars",
+						"**/secrets.yml"
+					],
+					"description": "File name suffixes or globs to exclude from autocomplete"
+				},
+				"sweep.autocompleteSnoozeUntil": {
+					"type": "number",
+					"default": 0,
+					"description": "Unix timestamp (ms) until which autocomplete is snoozed (0 disables snooze)"
+				},
+				"sweep.localPort": {
+					"type": "number",
+					"default": 8081,
+					"description": "Port for the local autocomplete server"
+				}
+			}
+		}
+	},
+	"scripts": {
+		"build": "bun build src/extension/activate.ts --outfile=out/extension.js --external=vscode --format=cjs --target=node",
+		"typecheck": "bun tsgo --noEmit",
+		"lint": "bun biome check .",
+		"fix": "bun biome check . --write"
+	},
+	"dependencies": {
+		"@shikijs/core": "^3.21.0",
+		"@shikijs/engine-javascript": "^3.21.0",
+		"@shikijs/langs": "^3.21.0",
+		"@shikijs/themes": "^3.21.0",
+		"zod": "4.3.6"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.13",
+		"@types/bun": "1.3.7",
+		"@types/vscode": "1.108.1",
+		"@typescript/native-preview": "7.0.0-dev.20260127.1"
+	}
+}
