@@ -53,6 +53,9 @@ tab-ai/
 ```bash
 cd vscode-nes-main
 
+# 安装依赖
+bun install
+
 # 构建扩展
 bun build
 
@@ -60,9 +63,6 @@ bun build
 bun lint          # 运行 Biome linter
 bun fix           # 自动修复 lint 问题
 bun typecheck     # TypeScript 类型检查
-
-# 测试
-bun test          # 运行所有单元测试
 ```
 
 ### 技术栈
@@ -78,7 +78,7 @@ bun test          # 运行所有单元测试
 - **上下文收集**: 自动收集最近访问文件、代码定义、剪贴板内容
 - **UTF-8/UTF-16转换**: API使用UTF-8偏移，VSCode使用UTF-16
 
-详细架构和开发指南见 `vscode-nes-main/vscode-nes-main/CLAUDE.md`
+详细架构和开发指南见 `vscode-nes-main/CLAUDE.md`
 
 ## Python 后端开发
 
@@ -119,23 +119,30 @@ python -m sweep_autocomplete.cli
 ### 1. 修改 VSCode 扩展
 ```bash
 cd vscode-nes-main
-bun install
-bun typecheck && bun lint
-bun build
-# 在 VSCode 中按 F5 启动调试
+bun install       # 安装依赖
+bun typecheck     # 类型检查
+bun lint          # 代码检查
+bun build         # 构建扩展
 ```
+
+**调试扩展**：
+1. 在 VSCode 中打开 `vscode-nes-main` 目录
+2. 按 F5 启动扩展开发主机（会自动运行 preLaunchTask 构建）
+3. 在新窗口中测试扩展功能
 
 ### 2. 修改 Python 后端
 ```bash
 cd sweep_autocomplete-0.1.1
-pip install -e .
-sweep-autocomplete  # 启动服务测试
+pip install -e .              # 开发模式安装
+sweep-autocomplete            # 启动服务（默认端口 8081）
+# 或
+python -m sweep_autocomplete.cli
 ```
 
 ### 3. 联调测试
-1. 启动 Python 后端服务（端口 8081）
-2. 在 VSCode 中启动扩展调试
-3. 扩展会自动连接本地服务器
+1. 先启动 Python 后端服务（端口 8081）
+2. 在 VSCode 中按 F5 启动扩展调试
+3. 扩展会自动连接本地服务器（或通过 uvx 自动启动）
 
 ## 依赖关系
 
@@ -160,7 +167,4 @@ Hugging Face 模型
 ## Git 工作流
 
 - 主分支: `main`
-- 当前状态: clean（无未提交更改）
-- 最近提交: 
-  - `4d975b1 init`
-  - `4ec9563 first commit`
+- 使用常规的 Git 工作流进行开发
