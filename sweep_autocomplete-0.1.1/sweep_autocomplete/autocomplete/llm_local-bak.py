@@ -1,7 +1,7 @@
 import os
 import threading
 import time
-from typing import Any, Iterator
+from typing import Any
 
 import requests
 from loguru import logger
@@ -9,8 +9,6 @@ from loguru import logger
 # 艹，ollama配置，别tm乱改
 OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL_NAME = os.environ.get("OLLAMA_MODEL_NAME", "sweep-next-edit-1.5b")
-# 是否启用流式响应（默认关闭，保持兼容性）
-OLLAMA_STREAM = os.environ.get("OLLAMA_STREAM", "false").lower() == "true"
 
 _model_verified: bool = False
 _model_lock = threading.Lock()
@@ -100,49 +98,31 @@ def generate_completion(
             payload = {
                 "model": model_name,
                 "prompt": full_prompt,
-                "stream": OLLAMA_STREAM,  # 支持流式响应
+                "stream": False,
                 "options": {
                     "temperature": temperature,
                     "num_predict": max_tokens,
                     "stop": stop,
-                    # 性能优化参数
-                    "num_ctx": 4096,  # 减少上下文窗口
-                    "num_batch": 512,  # 增加批处理
                 }
             }
 
             response = requests.post(
                 f"{OLLAMA_BASE_URL}/api/generate",
                 json=payload,
-                timeout=30,
-                stream=OLLAMA_STREAM
+                timeout=30
             )
             response.raise_for_status()
-
-            # 处理流式或非流式响应
-            if OLLAMA_STREAM:
-                # 流式响应：逐行读取
-                text = ""
-                finish_reason = None
-                for line in response.iter_lines():
-                    if line:
-                        chunk = line.decode('utf-8')
-                        import json
-                        data = json.loads(chunk)
-                        text += data.get("response", "")
-                        if data.get("done", False):
-                            finish_reason = data.get("done_reason", "stop")
-                            break
-            else:
-                # 非流式响应
-                result = response.json()
-                text = result.get("response", "")
-                finish_reason = result.get("done_reason", "stop")
+            result = response.json()
 
             elapsed_ms = int((time.time() - start) * 1000)
 
+            # 解析响应
+            text = result.get("response", "")
             if prefix:
                 text = prefix + text
+
+            # ollama 的 done_reason 对应 finish_reason
+            finish_reason = result.get("done_reason", "stop")
 
             logger.info(f"生成完成，耗时 {elapsed_ms}ms，生成 {len(text)} 字符")
 

@@ -1,0 +1,18 @@
+# 艹，这是优化后的 Modelfile
+FROM sweep-next-edit-1.5b:latest
+
+# 减少上下文窗口（代码补全不需要太长）
+PARAMETER num_ctx 4096
+
+# 增加并行处理
+PARAMETER num_batch 512
+
+# GPU 加速（如果有GPU）
+PARAMETER num_gpu 99
+
+# CPU 线程数（根据你的CPU核心数调整）
+PARAMETER num_thread 8
+
+# 预测缓存优化
+PARAMETER repeat_penalty 1.0
+PARAMETER repeat_last_n 64
