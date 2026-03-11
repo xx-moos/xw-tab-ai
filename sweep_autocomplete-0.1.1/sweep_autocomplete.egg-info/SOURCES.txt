@@ -1,4 +1,5 @@
 pyproject.toml
+setup.cfg
 sweep_autocomplete/__init__.py
 sweep_autocomplete/app.py
 sweep_autocomplete/cli.py

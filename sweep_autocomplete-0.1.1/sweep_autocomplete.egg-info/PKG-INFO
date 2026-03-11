@@ -1,12 +1,12 @@
 Metadata-Version: 2.4
 Name: sweep-autocomplete
 Version: 0.1.1
-Summary: Local next-edit autocomplete server powered by llama.cpp
+Summary: Local next-edit autocomplete server powered by ollama
 Author: Sweep AI
 License-Expression: Apache-2.0
 Project-URL: Homepage, https://github.com/sweepai/sweep-autocomplete
 Project-URL: Repository, https://github.com/sweepai/sweep-autocomplete
-Keywords: autocomplete,code-completion,llama,next-edit
+Keywords: autocomplete,code-completion,ollama,next-edit
 Classifier: Development Status :: 3 - Alpha
 Classifier: Intended Audience :: Developers
 Classifier: Programming Language :: Python :: 3
@@ -26,5 +26,3 @@ Requires-Dist: scipy>=1.11.0
 Requires-Dist: regex>=2023.0
 Requires-Dist: brotli>=1.1.0
 Requires-Dist: pydantic>=2.0.0
-Requires-Dist: llama-cpp-python>=0.2.0
-Requires-Dist: huggingface-hub>=0.20.0

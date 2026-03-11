@@ -85,6 +85,10 @@ def next_edit_autocomplete(
                     ]
                 yield json.dumps(data) + "\n"
 
+        except GeneratorExit:
+            # 艹，客户端提前关闭连接，这不是错误，别tm记录了
+            logger.debug("Client closed connection early (GeneratorExit)")
+            return
         except BaseException as e:
             logger.error(f"Next edit autocomplete error: {str(e)}")
             yield json.dumps(
@@ -94,8 +98,7 @@ def next_edit_autocomplete(
                     "traceback": str(traceback.format_exc()),
                 }
             )
-            if not isinstance(e, GeneratorExit):
-                raise e
+            raise e
         finally:
             end_time = time.time()
             latency_ms = (end_time - function_start_time) * 1000
